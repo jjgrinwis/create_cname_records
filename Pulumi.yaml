@@ -1,0 +1,6 @@
+name: pulumi-add_records
+runtime:
+  name: python
+  options:
+    virtualenv: venv
+description: use info from other stack to create dns records in existing zone
