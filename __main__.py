@@ -5,7 +5,7 @@ import pulumi_akamai as akamai
 
 
 def create_cname_records(x):
-    # special function to split our TXT string and add it to EdgeDNS
+    # special function to split our DNS CNAME string for other stack and add it to EdgeDNS
     # for this demo we're using a prefconfigured zone pulumi.nl
     records = []
 
