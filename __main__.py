@@ -9,20 +9,28 @@ def create_cname_records(x):
     # for this demo we're using a prefconfigured zone pulumi.nl
     records = []
 
-    for record in x:
-        items = record.split()
-        akamai.DnsRecord(
-            items[1],
-            recordtype='CNAME',
-            ttl=int(items[3]),
-            zone="pulumi.nl",
-            name=items[1],
-            targets=[items[4]]  # should be a list
-        )
+    # check if reference has any value at all
+    if x:
+        # we should pythonfy these for loops via list comprehension
+        for property in x:
+            for hostname in property:
+                record = hostname.split()
+                akamai.DnsRecord(
+                    record[0],
+                    recordtype='CNAME',
+                    ttl=int(record[2]),
+                    zone="pulumi.nl",
+                    name=record[0],
+                    targets=[record[3]]  # should be a list
+                )
 
-        records.append(items[1])
+            records.append(record[0])
 
-    return(records)
+        return(records)
+    else:
+        pulumi.warn("empty stack reference, no records are being created")
+
+    return None
 
 
 # get the CNAME records to be created from other stack and select correct credentials
@@ -32,6 +40,7 @@ def create_cname_records(x):
 # stack_ref = pulumi.StackReference("jjgrinwis/property/betajam")
 # this is again a Pulumi Output object so use apply() to get the real values
 stack_ref = pulumi.StackReference("jjgrinwis/property/betajam")
+
 txt_records = stack_ref.get_output(
     "target").apply(lambda x: create_cname_records(x))
 
